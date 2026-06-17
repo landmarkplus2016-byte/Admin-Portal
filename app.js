@@ -58,12 +58,42 @@ function debounce(fn, delay) {
   };
 }
 
+function todayIso() {
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${day}`;
+}
+
+function setFieldError(input, message) {
+  if (!input) return;
+  const group = input.closest('.form-group');
+  if (!group) return;
+  group.classList.add('has-error');
+  let err = group.querySelector('.form-error');
+  if (!err) {
+    err = document.createElement('div');
+    err.className = 'form-error';
+    group.appendChild(err);
+  }
+  err.textContent = message;
+}
+
+function clearFieldErrors(scope) {
+  const root = scope || document;
+  root.querySelectorAll('.form-group.has-error').forEach((g) => g.classList.remove('has-error'));
+  root.querySelectorAll('.form-error').forEach((e) => e.remove());
+}
+
 window.formatDate = formatDate;
 window.formatCurrency = formatCurrency;
 window.generateId = generateId;
 window.formatDateInput = formatDateInput;
 window.debounce = debounce;
 window.escapeHtml = escapeHtml;
+window.todayIso = todayIso;
+window.setFieldError = setFieldError;
+window.clearFieldErrors = clearFieldErrors;
 
 // ---------- Modal ----------
 
@@ -90,9 +120,10 @@ function openModal(title, bodyHTML, buttons = []) {
   titleEl.textContent = title;
 
   const closeBtn = document.createElement('button');
-  closeBtn.className = 'btn-secondary';
+  closeBtn.className = 'modal-close';
   closeBtn.type = 'button';
-  closeBtn.textContent = 'Close';
+  closeBtn.setAttribute('aria-label', 'Close');
+  closeBtn.textContent = '×';
   closeBtn.addEventListener('click', closeModal);
 
   header.appendChild(titleEl);

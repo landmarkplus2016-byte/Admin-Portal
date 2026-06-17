@@ -45,7 +45,48 @@
         <div class="page-title">Settings</div>
       </div>
       <div class="content">
-        <h2>Settings data will go here</h2>
+
+        <div class="settings-section card">
+          <div class="card-title">Backup Data</div>
+          <div class="card-description">Export all your data as a JSON file. Save it to Google Drive for safekeeping.</div>
+          <div class="last-backup-text" id="last-backup-display">Last backup: Never</div>
+          <button type="button" class="btn-primary" id="export-backup-btn">Export Backup</button>
+        </div>
+
+        <div class="settings-section card">
+          <div class="card-title">Restore from Backup</div>
+          <div class="card-description">Upload a backup file to restore all data.
+WARNING: This will replace ALL current data.</div>
+
+          <div class="drop-zone" id="drop-zone">
+            <span id="drop-zone-text">Drag a backup file here, or click to browse</span>
+          </div>
+          <input type="file" id="file-input" accept=".json" class="hidden">
+
+          <div class="file-selected-row hidden" id="file-selected-row">
+            <span class="file-selected-name" id="file-selected-name"></span>
+            <button type="button" class="btn-primary" id="restore-btn">Restore</button>
+          </div>
+        </div>
+
+        <div class="settings-section card">
+          <div class="card-title">Current Data</div>
+          <div class="table-meta-row">
+            <button type="button" class="btn-secondary" id="refresh-counts-btn">Refresh</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-overview-table">
+              <thead>
+                <tr>
+                  <th>Table</th>
+                  <th>Records</th>
+                </tr>
+              </thead>
+              <tbody id="data-overview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

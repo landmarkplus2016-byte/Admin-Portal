@@ -84,11 +84,15 @@
     const tbody = document.getElementById('invoices-tbody');
 
     if (records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No invoices found.</td></tr>`;
+      const isFiltered = filters.search || filters.contractor || filters.approval;
+      const message = isFiltered
+        ? 'No invoices match your search/filters.'
+        : `No invoices found. Click 'Add Invoice' to get started.`;
+      tbody.innerHTML = `<tr><td colspan="9" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
         <tr data-id="${escapeHtml(r.id)}">
-          <td dir="auto">${escapeHtml(r.contractor)}</td>
+          <td dir="auto" class="cell-truncate" title="${escapeHtml(r.contractor)}">${escapeHtml(r.contractor)}</td>
           <td>${escapeHtml(r.invoiceNo)}</td>
           <td dir="auto">${escapeHtml(r.siteId)}</td>
           <td>${formatCurrency(r.value)}</td>
@@ -96,7 +100,7 @@
           <td>${escapeHtml(r.vfCode)}</td>
           <td>${formatDate(r.financeDate)}</td>
           <td><span class="badge ${approvalBadgeClass(r.approval)}">${escapeHtml(r.approval)}</span></td>
-          <td dir="auto">${escapeHtml(r.notes)}</td>
+          <td dir="auto" class="cell-truncate" title="${escapeHtml(r.notes)}">${escapeHtml(r.notes)}</td>
         </tr>
       `).join('');
     }
@@ -177,7 +181,7 @@
       </div>
       <div class="form-group">
         <label>Received Date</label>
-        <input type="date" id="f-receivedDate" value="${formatDateInput(r.receivedDate)}">
+        <input type="date" id="f-receivedDate" value="${record ? formatDateInput(r.receivedDate) : todayIso()}">
       </div>
       <div class="form-group">
         <label>Invoice No.</label>
@@ -250,12 +254,30 @@
   }
 
   function saveFromForm(id) {
-    const contractor = document.getElementById('f-contractor').value;
-    const receivedDate = document.getElementById('f-receivedDate').value;
-    const valueRaw = document.getElementById('f-value').value;
+    clearFieldErrors(document.querySelector('.modal-body'));
 
-    if (!contractor || !receivedDate || valueRaw === '' || isNaN(Number(valueRaw))) {
-      showToast('Contractor, Received Date, and Value are required', 'danger');
+    const contractorInput = document.getElementById('f-contractor');
+    const receivedDateInput = document.getElementById('f-receivedDate');
+    const valueInput = document.getElementById('f-value');
+    const contractor = contractorInput.value;
+    const receivedDate = receivedDateInput.value;
+    const valueRaw = valueInput.value;
+
+    let valid = true;
+    if (!contractor) {
+      setFieldError(contractorInput, 'Contractor is required');
+      valid = false;
+    }
+    if (!receivedDate) {
+      setFieldError(receivedDateInput, 'Received Date is required');
+      valid = false;
+    }
+    if (valueRaw === '' || isNaN(Number(valueRaw))) {
+      setFieldError(valueInput, 'A valid value is required');
+      valid = false;
+    }
+    if (!valid) {
+      showToast('Please fix the errors below', 'danger');
       return;
     }
 

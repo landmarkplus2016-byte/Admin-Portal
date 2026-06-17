@@ -80,11 +80,15 @@
     const tbody = document.getElementById('allowances-tbody');
 
     if (records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No allowances found.</td></tr>`;
+      const isFiltered = filters.search || filters.department || filters.engineer;
+      const message = isFiltered
+        ? 'No allowances match your search/filters.'
+        : `No allowances found. Click 'Add Allowance' to get started.`;
+      tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
         <tr data-id="${escapeHtml(r.id)}">
-          <td dir="auto">${escapeHtml(r.name)}</td>
+          <td dir="auto" class="cell-truncate" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</td>
           <td>${formatCurrency(r.value)}</td>
           <td>${escapeHtml(r.engineer)}</td>
           <td>${formatDate(r.receivedDate)}</td>
@@ -153,7 +157,7 @@
       </div>
       <div class="form-group">
         <label>Received Date</label>
-        <input type="date" id="f-receivedDate" value="${formatDateInput(r.receivedDate)}">
+        <input type="date" id="f-receivedDate" value="${record ? formatDateInput(r.receivedDate) : todayIso()}">
       </div>
       <div class="form-group">
         <label>Signature Date</label>
@@ -174,11 +178,24 @@
   }
 
   function saveFromForm(id) {
-    const name = document.getElementById('f-name').value.trim();
-    const valueRaw = document.getElementById('f-value').value;
+    clearFieldErrors(document.querySelector('.modal-body'));
 
-    if (!name || valueRaw === '' || isNaN(Number(valueRaw))) {
-      showToast('Name and Value are required', 'danger');
+    const nameInput = document.getElementById('f-name');
+    const valueInput = document.getElementById('f-value');
+    const name = nameInput.value.trim();
+    const valueRaw = valueInput.value;
+
+    let valid = true;
+    if (!name) {
+      setFieldError(nameInput, 'Name is required');
+      valid = false;
+    }
+    if (valueRaw === '' || isNaN(Number(valueRaw))) {
+      setFieldError(valueInput, 'A valid value is required');
+      valid = false;
+    }
+    if (!valid) {
+      showToast('Please fix the errors below', 'danger');
       return;
     }
 
