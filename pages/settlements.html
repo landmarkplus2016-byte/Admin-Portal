@@ -45,7 +45,36 @@
         <div class="page-title">Settlements</div>
       </div>
       <div class="content">
-        <h2>Settlements data will go here</h2>
+        <div class="filter-bar">
+          <input type="text" id="search-input" class="search-input" placeholder="Search by name or notes...">
+          <select id="department-filter" class="filter-select">
+            <option value="">All Departments</option>
+          </select>
+          <select id="engineer-filter" class="filter-select">
+            <option value="">All Engineers</option>
+          </select>
+          <button type="button" class="btn-primary" id="add-settlement-btn">Add Settlement</button>
+        </div>
+        <div class="table-meta-row">
+          <div class="record-count" id="record-count"></div>
+        </div>
+        <div class="table-wrapper">
+          <table id="settlements-table">
+            <thead>
+              <tr>
+                <th data-field="name">Name</th>
+                <th data-field="value">Value</th>
+                <th data-field="engineer">Engineer</th>
+                <th data-field="receivedDate">Received Date</th>
+                <th data-field="signatureDate">Signature Date</th>
+                <th data-field="financeDate">Finance Date</th>
+                <th data-field="department">Department</th>
+                <th data-field="notes">Notes</th>
+              </tr>
+            </thead>
+            <tbody id="settlements-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

@@ -45,7 +45,46 @@
         <div class="page-title">Expenses</div>
       </div>
       <div class="content">
-        <h2>Expenses data will go here</h2>
+        <div class="filter-bar">
+          <input type="text" id="search-input" class="search-input" placeholder="Search by name, site ID, or notes...">
+          <select id="department-filter" class="filter-select">
+            <option value="">All Departments</option>
+          </select>
+          <select id="approval-filter" class="filter-select">
+            <option value="">All Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Hold">Hold</option>
+            <option value="Canceled">Canceled</option>
+          </select>
+          <select id="payment-filter" class="filter-select">
+            <option value="">All Payment</option>
+            <option value="transfer">Transfer</option>
+            <option value="cash">Cash</option>
+          </select>
+          <button type="button" class="btn-primary" id="add-expense-btn">Add Expense</button>
+        </div>
+        <div class="table-meta-row">
+          <div class="record-count" id="record-count"></div>
+        </div>
+        <div class="table-wrapper">
+          <table id="expenses-table">
+            <thead>
+              <tr>
+                <th data-field="name">Name</th>
+                <th data-field="siteId">Site ID</th>
+                <th data-field="value">Value</th>
+                <th data-field="receivedDate">Received Date</th>
+                <th data-field="financeDate">Finance Date</th>
+                <th data-field="paymentMethod">Payment</th>
+                <th data-field="approval">Approval</th>
+                <th data-field="manager">Manager</th>
+                <th data-field="department">Department</th>
+                <th data-field="notes">Notes</th>
+              </tr>
+            </thead>
+            <tbody id="expenses-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

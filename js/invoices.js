@@ -1,0 +1,330 @@
+// js/invoices.js — Invoices & Dues page logic only.
+
+(function () {
+
+  let sortField = 'receivedDate';
+  let sortDir = 'desc';
+
+  function populateFilterOptions() {
+    const contractorSelect = document.getElementById('contractor-filter');
+    Data.CONTRACTORS.forEach((c) => {
+      contractorSelect.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`);
+    });
+  }
+
+  function getFilters() {
+    return {
+      search: document.getElementById('search-input').value.trim().toLowerCase(),
+      contractor: document.getElementById('contractor-filter').value,
+      approval: document.getElementById('approval-filter').value
+    };
+  }
+
+  function applySort(records) {
+    return [...records].sort((a, b) => {
+      let av = a[sortField];
+      let bv = b[sortField];
+
+      if (sortField === 'value') {
+        av = Number(av) || 0;
+        bv = Number(bv) || 0;
+      } else {
+        av = (av || '').toString().toLowerCase();
+        bv = (bv || '').toString().toLowerCase();
+      }
+
+      if (av < bv) return sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  function updateSortIndicators() {
+    document.querySelectorAll('#invoices-table th').forEach((th) => {
+      th.classList.remove('sort-asc', 'sort-desc');
+      if (th.dataset.field === sortField) {
+        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      }
+    });
+  }
+
+  function approvalBadgeClass(approval) {
+    if (approval === 'Approved') return 'badge-success';
+    if (approval === 'Rejected') return 'badge-danger';
+    return 'badge-neutral';
+  }
+
+  function renderInvoices() {
+    const filters = getFilters();
+    let records = Data.getInvoices();
+
+    if (filters.search) {
+      records = records.filter((r) =>
+        (r.contractor || '').toLowerCase().includes(filters.search) ||
+        (r.invoiceNo || '').toString().toLowerCase().includes(filters.search) ||
+        (r.siteId || '').toLowerCase().includes(filters.search) ||
+        (r.notes || '').toLowerCase().includes(filters.search)
+      );
+    }
+
+    if (filters.contractor) {
+      records = records.filter((r) => r.contractor === filters.contractor);
+    }
+
+    if (filters.approval) {
+      records = records.filter((r) => r.approval === filters.approval);
+    }
+
+    records = applySort(records);
+
+    const total = records.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
+    document.getElementById('record-count').textContent =
+      `Showing ${records.length} records — Total: ${formatCurrency(total)}`;
+
+    const tbody = document.getElementById('invoices-tbody');
+
+    if (records.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No invoices found.</td></tr>`;
+    } else {
+      tbody.innerHTML = records.map((r) => `
+        <tr data-id="${escapeHtml(r.id)}">
+          <td dir="auto">${escapeHtml(r.contractor)}</td>
+          <td>${escapeHtml(r.invoiceNo)}</td>
+          <td dir="auto">${escapeHtml(r.siteId)}</td>
+          <td>${formatCurrency(r.value)}</td>
+          <td dir="auto">${escapeHtml(r.coordinator)}</td>
+          <td>${escapeHtml(r.vfCode)}</td>
+          <td>${formatDate(r.financeDate)}</td>
+          <td><span class="badge ${approvalBadgeClass(r.approval)}">${escapeHtml(r.approval)}</span></td>
+          <td dir="auto">${escapeHtml(r.notes)}</td>
+        </tr>
+      `).join('');
+    }
+
+    updateSortIndicators();
+    attachRowListeners();
+  }
+
+  function attachHeaderListeners() {
+    document.querySelectorAll('#invoices-table th[data-field]').forEach((th) => {
+      th.addEventListener('click', () => {
+        const field = th.dataset.field;
+        if (sortField === field) {
+          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortField = field;
+          sortDir = 'asc';
+        }
+        renderInvoices();
+      });
+    });
+  }
+
+  function attachRowListeners() {
+    document.querySelectorAll('#invoices-tbody tr[data-id]').forEach((tr) => {
+      tr.addEventListener('click', () => {
+        const id = tr.dataset.id;
+        const record = Data.getInvoices().find((r) => r.id === id);
+        if (record) openEditModal(record);
+      });
+    });
+  }
+
+  function timelineHtml(r) {
+    const steps = [
+      { label: 'Received', date: r.receivedDate },
+      { label: 'Coordinator', date: r.coordinatorFinished || r.coordinatorDate },
+      { label: 'VF Code / Aliaa', date: r.aliaaFinished || r.aliaaDate },
+      { label: 'Ashraf/Mohannad', date: r.ashrafFinished || r.ashrafDate },
+      { label: 'Finance', date: r.financeDate },
+      { label: 'Done', date: r.approval ? (r.financeDate || r.updatedAt) : null }
+    ];
+
+    const stepsHtml = steps.map((step) => {
+      const done = !!step.date;
+      return `
+        <div class="timeline-step ${done ? 'done' : 'pending'}">
+          <div class="timeline-line"></div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-label">${escapeHtml(step.label)}</div>
+          <div class="timeline-date">${done ? formatDate(step.date.slice ? step.date.slice(0, 10) : step.date) : 'Pending'}</div>
+        </div>
+      `;
+    }).join('');
+
+    return `<div class="timeline">${stepsHtml}</div>`;
+  }
+
+  function invoiceFormHtml(record) {
+    const r = record || {};
+
+    const contractorOptions = Data.CONTRACTORS.map((c) =>
+      `<option value="${escapeHtml(c)}" ${r.contractor === c ? 'selected' : ''}>${escapeHtml(c)}</option>`
+    ).join('');
+
+    const approvalOptions = Data.INVOICE_APPROVAL_STATUSES.map((a) =>
+      `<option value="${escapeHtml(a)}" ${r.approval === a ? 'selected' : ''}>${escapeHtml(a)}</option>`
+    ).join('');
+
+    return `
+      ${record ? timelineHtml(r) : ''}
+      <div class="form-group">
+        <label>Contractor</label>
+        <select id="f-contractor">
+          <option value="">— Select —</option>
+          ${contractorOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Received Date</label>
+        <input type="date" id="f-receivedDate" value="${formatDateInput(r.receivedDate)}">
+      </div>
+      <div class="form-group">
+        <label>Invoice No.</label>
+        <input type="text" id="f-invoiceNo" value="${escapeHtml(r.invoiceNo)}">
+      </div>
+      <div class="form-group">
+        <label>Site ID</label>
+        <input type="text" id="f-siteId" dir="auto" value="${escapeHtml(r.siteId)}">
+      </div>
+      <div class="form-group">
+        <label>Value</label>
+        <input type="number" id="f-value" value="${r.value !== undefined && r.value !== null ? r.value : ''}">
+      </div>
+      <div class="form-group">
+        <label>Coordinator</label>
+        <input type="text" id="f-coordinator" dir="auto" value="${escapeHtml(r.coordinator)}">
+      </div>
+      <div class="form-group">
+        <label>Coordinator Date</label>
+        <input type="date" id="f-coordinatorDate" value="${formatDateInput(r.coordinatorDate)}">
+      </div>
+      <div class="form-group">
+        <label>Coordinator Finished</label>
+        <input type="date" id="f-coordinatorFinished" value="${formatDateInput(r.coordinatorFinished)}">
+      </div>
+      <div class="form-group">
+        <label>VF Code</label>
+        <input type="text" id="f-vfCode" value="${escapeHtml(r.vfCode)}">
+      </div>
+      <div class="form-group">
+        <label>Aliaa Date</label>
+        <input type="date" id="f-aliaaDate" value="${formatDateInput(r.aliaaDate)}">
+      </div>
+      <div class="form-group">
+        <label>Aliaa Finished</label>
+        <input type="date" id="f-aliaaFinished" value="${formatDateInput(r.aliaaFinished)}">
+      </div>
+      <div class="form-group">
+        <label>Ashraf/Mohannad Date</label>
+        <input type="date" id="f-ashrafDate" value="${formatDateInput(r.ashrafDate)}">
+      </div>
+      <div class="form-group">
+        <label>Ashraf/Mohannad Finished</label>
+        <input type="date" id="f-ashrafFinished" value="${formatDateInput(r.ashrafFinished)}">
+      </div>
+      <div class="form-group">
+        <label>Modification</label>
+        <textarea id="f-modification" rows="2">${escapeHtml(r.modification)}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Finance Date</label>
+        <input type="date" id="f-financeDate" value="${formatDateInput(r.financeDate)}">
+      </div>
+      <div class="form-group">
+        <label>Approval</label>
+        <select id="f-approval">
+          <option value="">— Select —</option>
+          ${approvalOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>With</label>
+        <input type="text" id="f-with" dir="auto" value="${escapeHtml(r.with)}">
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="f-notes" dir="auto" rows="3">${escapeHtml(r.notes)}</textarea>
+      </div>
+    `;
+  }
+
+  function saveFromForm(id) {
+    const contractor = document.getElementById('f-contractor').value;
+    const receivedDate = document.getElementById('f-receivedDate').value;
+    const valueRaw = document.getElementById('f-value').value;
+
+    if (!contractor || !receivedDate || valueRaw === '' || isNaN(Number(valueRaw))) {
+      showToast('Contractor, Received Date, and Value are required', 'danger');
+      return;
+    }
+
+    const record = {
+      id: id || generateId('INV'),
+      contractor: contractor,
+      receivedDate: receivedDate,
+      invoiceNo: document.getElementById('f-invoiceNo').value.trim(),
+      siteId: document.getElementById('f-siteId').value.trim(),
+      value: Number(valueRaw),
+      coordinator: document.getElementById('f-coordinator').value.trim(),
+      coordinatorDate: document.getElementById('f-coordinatorDate').value || null,
+      coordinatorFinished: document.getElementById('f-coordinatorFinished').value || null,
+      vfCode: document.getElementById('f-vfCode').value.trim(),
+      aliaaDate: document.getElementById('f-aliaaDate').value || null,
+      aliaaFinished: document.getElementById('f-aliaaFinished').value || null,
+      ashrafDate: document.getElementById('f-ashrafDate').value || null,
+      ashrafFinished: document.getElementById('f-ashrafFinished').value || null,
+      modification: document.getElementById('f-modification').value.trim(),
+      financeDate: document.getElementById('f-financeDate').value || null,
+      approval: document.getElementById('f-approval').value,
+      with: document.getElementById('f-with').value.trim(),
+      notes: document.getElementById('f-notes').value.trim(),
+      deleted: false
+    };
+
+    Data.saveInvoice(record);
+    closeModal();
+    renderInvoices();
+    showToast(id ? 'Invoice updated' : 'Invoice added');
+  }
+
+  function handleDelete(id) {
+    if (!confirm('Delete this invoice?')) return;
+    Data.deleteInvoice(id);
+    closeModal();
+    renderInvoices();
+    showToast('Invoice deleted');
+  }
+
+  function openAddModal() {
+    openModal('Add Invoice', invoiceFormHtml(), [
+      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
+      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(null) }
+    ]);
+  }
+
+  function openEditModal(record) {
+    openModal('Edit Invoice', invoiceFormHtml(record), [
+      { label: 'Delete', class: 'btn-secondary', onClick: () => handleDelete(record.id) },
+      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
+      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(record.id) }
+    ]);
+  }
+
+  function initInvoicesPage() {
+    if (!document.getElementById('invoices-table')) return;
+
+    populateFilterOptions();
+    attachHeaderListeners();
+
+    document.getElementById('search-input').addEventListener('input', debounce(renderInvoices, 200));
+    document.getElementById('contractor-filter').addEventListener('change', renderInvoices);
+    document.getElementById('approval-filter').addEventListener('change', renderInvoices);
+    document.getElementById('add-invoice-btn').addEventListener('click', openAddModal);
+
+    renderInvoices();
+  }
+
+  document.addEventListener('DOMContentLoaded', initInvoicesPage);
+
+})();

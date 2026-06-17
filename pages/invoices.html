@@ -45,7 +45,39 @@
         <div class="page-title">Invoices &amp; Dues</div>
       </div>
       <div class="content">
-        <h2>Invoices &amp; Dues data will go here</h2>
+        <div class="filter-bar">
+          <input type="text" id="search-input" class="search-input" placeholder="Search by contractor, invoice no., site ID, or notes...">
+          <select id="contractor-filter" class="filter-select">
+            <option value="">All Contractors</option>
+          </select>
+          <select id="approval-filter" class="filter-select">
+            <option value="">All Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+          <button type="button" class="btn-primary" id="add-invoice-btn">Add Invoice</button>
+        </div>
+        <div class="table-meta-row">
+          <div class="record-count" id="record-count"></div>
+        </div>
+        <div class="table-wrapper">
+          <table id="invoices-table">
+            <thead>
+              <tr>
+                <th data-field="contractor">Contractor</th>
+                <th data-field="invoiceNo">Inv. No.</th>
+                <th data-field="siteId">Site ID</th>
+                <th data-field="value">Value</th>
+                <th data-field="coordinator">Coordinator</th>
+                <th data-field="vfCode">VF Code</th>
+                <th data-field="financeDate">Finance Date</th>
+                <th data-field="approval">Approval</th>
+                <th data-field="notes">Notes</th>
+              </tr>
+            </thead>
+            <tbody id="invoices-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
