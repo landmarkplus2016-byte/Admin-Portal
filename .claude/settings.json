@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python test_allowances.py)",
+      "PowerShell(Get-Command python, python3, py -ErrorAction SilentlyContinue)",
+      "PowerShell(py --list 2>&1)",
+      "PowerShell(py -3 --version 2>&1)",
+      "PowerShell(Get-Command node, npx -ErrorAction SilentlyContinue)"
+    ]
+  }
+}
