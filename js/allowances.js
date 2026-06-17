@@ -7,12 +7,12 @@
 
   function populateFilterOptions() {
     const deptSelect = document.getElementById('department-filter');
-    Data.DEPARTMENTS.forEach((dept) => {
+    Data.getDepartments().forEach((dept) => {
       deptSelect.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(dept)}">${escapeHtml(dept)}</option>`);
     });
 
     const engSelect = document.getElementById('engineer-filter');
-    Data.SETTLEMENT_ENGINEERS.forEach((eng) => {
+    Data.getSettlementEngineers().forEach((eng) => {
       engSelect.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(eng)}">${escapeHtml(eng)}</option>`);
     });
   }
@@ -75,15 +75,15 @@
 
     const total = records.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
     document.getElementById('record-count').textContent =
-      `Showing ${records.length} records — Total: ${formatCurrency(total)}`;
+      t('records.summary', { count: records.length, total: formatCurrency(total) });
 
     const tbody = document.getElementById('allowances-tbody');
 
     if (records.length === 0) {
       const isFiltered = filters.search || filters.department || filters.engineer;
       const message = isFiltered
-        ? 'No allowances match your search/filters.'
-        : `No allowances found. Click 'Add Allowance' to get started.`;
+        ? t('allowances.emptyFiltered')
+        : t('allowances.emptyDefault');
       tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
@@ -131,47 +131,47 @@
   function allowanceFormHtml(record) {
     const r = record || {};
 
-    const engineerOptions = Data.SETTLEMENT_ENGINEERS.map((eng) =>
+    const engineerOptions = Data.getSettlementEngineers().map((eng) =>
       `<option value="${escapeHtml(eng)}" ${r.engineer === eng ? 'selected' : ''}>${escapeHtml(eng)}</option>`
     ).join('');
 
-    const departmentOptions = Data.DEPARTMENTS.map((dept) =>
+    const departmentOptions = Data.getDepartments().map((dept) =>
       `<option value="${escapeHtml(dept)}" ${r.department === dept ? 'selected' : ''}>${escapeHtml(dept)}</option>`
     ).join('');
 
     return `
       <div class="form-group">
-        <label>Name</label>
+        <label>${t('common.field.name')}</label>
         <input type="text" id="f-name" dir="auto" value="${escapeHtml(r.name)}">
       </div>
       <div class="form-group">
-        <label>Value</label>
+        <label>${t('common.field.value')}</label>
         <input type="number" id="f-value" value="${r.value !== undefined && r.value !== null ? r.value : ''}">
       </div>
       <div class="form-group">
-        <label>Engineer</label>
+        <label>${t('common.field.engineer')}</label>
         <select id="f-engineer">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${engineerOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Received Date</label>
+        <label>${t('common.field.receivedDate')}</label>
         <input type="date" id="f-receivedDate" value="${record ? formatDateInput(r.receivedDate) : todayIso()}">
       </div>
       <div class="form-group">
-        <label>Signature Date</label>
+        <label>${t('common.field.signatureDate')}</label>
         <input type="date" id="f-signatureDate" value="${formatDateInput(r.signatureDate)}">
       </div>
       <div class="form-group">
-        <label>Department</label>
+        <label>${t('common.field.department')}</label>
         <select id="f-department">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${departmentOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Finance Date</label>
+        <label>${t('common.field.financeDate')}</label>
         <input type="date" id="f-financeDate" value="${formatDateInput(r.financeDate)}">
       </div>
     `;
@@ -187,15 +187,15 @@
 
     let valid = true;
     if (!name) {
-      setFieldError(nameInput, 'Name is required');
+      setFieldError(nameInput, t('common.nameRequired'));
       valid = false;
     }
     if (valueRaw === '' || isNaN(Number(valueRaw))) {
-      setFieldError(valueInput, 'A valid value is required');
+      setFieldError(valueInput, t('common.valueRequired'));
       valid = false;
     }
     if (!valid) {
-      showToast('Please fix the errors below', 'danger');
+      showToast(t('common.fixErrors'), 'danger');
       return;
     }
 
@@ -214,29 +214,29 @@
     Data.saveAllowance(record);
     closeModal();
     renderAllowances();
-    showToast(id ? 'Allowance updated' : 'Allowance added');
+    showToast(id ? t('allowances.toastUpdated') : t('allowances.toastAdded'));
   }
 
   function handleDelete(id) {
-    if (!confirm('Delete this allowance?')) return;
+    if (!confirm(t('allowances.confirmDelete'))) return;
     Data.deleteAllowance(id);
     closeModal();
     renderAllowances();
-    showToast('Allowance deleted');
+    showToast(t('allowances.toastDeleted'));
   }
 
   function openAddModal() {
-    openModal('Add Allowance', allowanceFormHtml(), [
-      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
-      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(null) }
+    openModal(t('allowances.modalAdd'), allowanceFormHtml(), [
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: () => saveFromForm(null) }
     ]);
   }
 
   function openEditModal(record) {
-    openModal('Edit Allowance', allowanceFormHtml(record), [
-      { label: 'Delete', class: 'btn-secondary', onClick: () => handleDelete(record.id) },
-      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
-      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(record.id) }
+    openModal(t('allowances.modalEdit'), allowanceFormHtml(record), [
+      { label: t('common.delete'), class: 'btn-secondary', onClick: () => handleDelete(record.id) },
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: () => saveFromForm(record.id) }
     ]);
   }
 

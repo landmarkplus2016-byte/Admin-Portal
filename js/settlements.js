@@ -7,12 +7,12 @@
 
   function populateFilterOptions() {
     const deptSelect = document.getElementById('department-filter');
-    Data.DEPARTMENTS.forEach((dept) => {
+    Data.getDepartments().forEach((dept) => {
       deptSelect.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(dept)}">${escapeHtml(dept)}</option>`);
     });
 
     const engSelect = document.getElementById('engineer-filter');
-    Data.SETTLEMENT_ENGINEERS.forEach((eng) => {
+    Data.getSettlementEngineers().forEach((eng) => {
       engSelect.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(eng)}">${escapeHtml(eng)}</option>`);
     });
   }
@@ -76,15 +76,15 @@
 
     const total = records.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
     document.getElementById('record-count').textContent =
-      `Showing ${records.length} records — Total: ${formatCurrency(total)}`;
+      t('records.summary', { count: records.length, total: formatCurrency(total) });
 
     const tbody = document.getElementById('settlements-tbody');
 
     if (records.length === 0) {
       const isFiltered = filters.search || filters.department || filters.engineer;
       const message = isFiltered
-        ? 'No settlements match your search/filters.'
-        : `No settlements found. Click 'Add Settlement' to get started.`;
+        ? t('settlements.emptyFiltered')
+        : t('settlements.emptyDefault');
       tbody.innerHTML = `<tr><td colspan="8" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => {
@@ -146,45 +146,45 @@
 
     return `
       <div class="form-group">
-        <label>Name</label>
+        <label>${t('common.field.name')}</label>
         <input type="text" id="f-name" dir="auto" value="${escapeHtml(r.name)}">
       </div>
       <div class="form-group">
-        <label>Value</label>
+        <label>${t('common.field.value')}</label>
         <input type="number" id="f-value" value="${r.value !== undefined && r.value !== null ? r.value : ''}">
       </div>
       <div class="form-group">
-        <label>Engineer</label>
+        <label>${t('common.field.engineer')}</label>
         <select id="f-engineer">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${engineerOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Received Date</label>
+        <label>${t('common.field.receivedDate')}</label>
         <input type="date" id="f-receivedDate" value="${record ? formatDateInput(r.receivedDate) : todayIso()}">
       </div>
       <div class="form-group">
-        <label>Signature Date</label>
+        <label>${t('common.field.signatureDate')}</label>
         <input type="date" id="f-signatureDate" value="${formatDateInput(r.signatureDate)}">
       </div>
       <div class="form-group">
-        <label>Finance Date</label>
+        <label>${t('common.field.financeDate')}</label>
         <input type="date" id="f-financeDate" value="${formatDateInput(r.financeDate)}">
       </div>
       <div class="form-group">
-        <label>With</label>
+        <label>${t('common.field.with')}</label>
         <input type="text" id="f-with" dir="auto" value="${escapeHtml(r.with)}">
       </div>
       <div class="form-group">
-        <label>Department</label>
+        <label>${t('common.field.department')}</label>
         <select id="f-department">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${departmentOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Notes</label>
+        <label>${t('common.field.notes')}</label>
         <textarea id="f-notes" dir="auto" rows="3">${escapeHtml(r.notes)}</textarea>
       </div>
     `;
@@ -200,15 +200,15 @@
 
     let valid = true;
     if (!name) {
-      setFieldError(nameInput, 'Name is required');
+      setFieldError(nameInput, t('common.nameRequired'));
       valid = false;
     }
     if (valueRaw === '' || isNaN(Number(valueRaw))) {
-      setFieldError(valueInput, 'A valid value is required');
+      setFieldError(valueInput, t('common.valueRequired'));
       valid = false;
     }
     if (!valid) {
-      showToast('Please fix the errors below', 'danger');
+      showToast(t('common.fixErrors'), 'danger');
       return;
     }
 
@@ -229,29 +229,29 @@
     Data.saveSettlement(record);
     closeModal();
     renderSettlements();
-    showToast(id ? 'Settlement updated' : 'Settlement added');
+    showToast(id ? t('settlements.toastUpdated') : t('settlements.toastAdded'));
   }
 
   function handleDelete(id) {
-    if (!confirm('Delete this settlement?')) return;
+    if (!confirm(t('settlements.confirmDelete'))) return;
     Data.deleteSettlement(id);
     closeModal();
     renderSettlements();
-    showToast('Settlement deleted');
+    showToast(t('settlements.toastDeleted'));
   }
 
   function openAddModal() {
-    openModal('Add Settlement', settlementFormHtml(), [
-      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
-      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(null) }
+    openModal(t('settlements.modalAdd'), settlementFormHtml(), [
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: () => saveFromForm(null) }
     ]);
   }
 
   function openEditModal(record) {
-    openModal('Edit Settlement', settlementFormHtml(record), [
-      { label: 'Delete', class: 'btn-secondary', onClick: () => handleDelete(record.id) },
-      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
-      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(record.id) }
+    openModal(t('settlements.modalEdit'), settlementFormHtml(record), [
+      { label: t('common.delete'), class: 'btn-secondary', onClick: () => handleDelete(record.id) },
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: () => saveFromForm(record.id) }
     ]);
   }
 

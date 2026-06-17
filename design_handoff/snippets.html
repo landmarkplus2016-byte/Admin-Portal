@@ -1,0 +1,349 @@
+<!--
+  ============================================================
+  HR Admin Portal — HTML Snippets
+  Copy-paste these into your existing page files.
+  ============================================================
+-->
+
+
+<!-- ============================================================
+  1. PAGE HEAD — replace existing <head> content on every page
+  ============================================================ -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Landmark Plus HR Portal</title>
+
+  <!-- IBM Plex font family (Latin + Arabic + Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- New stylesheet (replace old styles.css reference) -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- For pages/ subdirectory use: <link rel="stylesheet" href="../styles.css"> -->
+</head>
+
+
+<!-- ============================================================
+  2. FULL LAYOUT SHELL — replaces the outer .layout / .sidebar / .topbar structure
+     Place this in <body>. The .content div inner HTML stays the same.
+  ============================================================ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-mark">L</div>
+      <div class="sidebar-logo-text">
+        <span class="sidebar-logo-name">Landmark Plus</span>
+        <span class="sidebar-logo-sub">HR PORTAL</span>
+      </div>
+    </div>
+
+    <!-- Nav section label -->
+    <div class="sidebar-section-label">Menu</div>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav">
+
+      <a href="../index.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/>
+            <rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/>
+          </svg>
+        </span>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="settlements.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M3 7h18"/><path d="M3 12h18"/><path d="M3 17h12"/>
+          </svg>
+        </span>
+        <span>Settlements</span>
+      </a>
+
+      <a href="expenses.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M6 2h9l3 3v17l-3-2-3 2-3-2-3 2V2Z"/><path d="M9 8h6"/><path d="M9 12h6"/>
+          </svg>
+        </span>
+        <span>Expenses</span>
+        <span class="nav-badge">12</span>
+      </a>
+
+      <a href="invoices.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/>
+            <path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h4"/>
+          </svg>
+        </span>
+        <span>Invoices &amp; Dues</span>
+        <span class="nav-badge">5</span>
+      </a>
+
+      <a href="allowances.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M12 8v13"/><path d="M3 12h18"/>
+            <path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/>
+          </svg>
+        </span>
+        <span>Allowances</span>
+      </a>
+
+      <a href="settings.html" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3a2 2 0 1 1 0-4h.2a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 2.7-1.1V3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.4 1Z"/>
+          </svg>
+        </span>
+        <span>Settings</span>
+      </a>
+
+    </nav>
+
+    <!-- Footer: backup card + user -->
+    <div class="sidebar-footer">
+      <div class="sidebar-backup-card">
+        <div class="sidebar-backup-header">
+          <span class="sidebar-backup-dot"></span>
+          <span class="sidebar-backup-title">Backup healthy</span>
+        </div>
+        <div class="sidebar-backup-sub">Last export 2 days ago</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">MA</div>
+        <div>
+          <div class="sidebar-user-name">Mohamed Adel</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+
+  </aside><!-- /sidebar -->
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title-group">
+        <span class="page-title">Dashboard</span>
+        <span class="page-sub">Overview across all departments</span>
+      </div>
+
+      <div class="topbar-actions">
+
+        <!-- Search -->
+        <div class="topbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+            <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input type="text" placeholder="Search anything…" aria-label="Search">
+        </div>
+
+        <!-- Palette switcher -->
+        <div class="palette-switcher">
+          <button class="palette-dot active" style="background:#4F46E5;" data-theme-btn="indigo" title="Indigo"></button>
+          <button class="palette-dot"        style="background:#2563EB;" data-theme-btn="sky"    title="Sky"></button>
+          <button class="palette-dot"        style="background:#0E9F6E;" data-theme-btn="emerald" title="Emerald"></button>
+          <button class="palette-dot"        style="background:#7C3AED;" data-theme-btn="violet" title="Violet"></button>
+          <button class="palette-dot"        style="background:#C2620B;" data-theme-btn="amber"  title="Amber"></button>
+        </div>
+
+        <!-- Language toggle -->
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang-btn="en">EN</button>
+          <button class="lang-btn"        data-lang-btn="ar">ع</button>
+        </div>
+
+        <!-- Bell -->
+        <button class="topbar-bell" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+          </svg>
+          <span class="topbar-bell-dot"></span>
+        </button>
+
+      </div>
+    </header><!-- /topbar -->
+
+    <!-- CONTENT — inner HTML stays the same from your existing pages -->
+    <div class="content">
+      <div class="content-inner">
+
+        <!-- Backup banner (rendered by app.js) -->
+        <div id="backup-banner"></div>
+
+        <!-- Dashboard: KPI grid, charts, etc. (rendered by app.js) -->
+        <div class="kpi-grid"    id="summary-grid"></div>
+        <div class="quick-stats-row" id="quick-stats"></div>
+
+        <!-- For non-dashboard pages: table lives here as before -->
+
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+
+<!-- ============================================================
+  3. KPI CARD — template for renderSummaryCards() in app.js
+     Replaces the old .summary-card markup
+  ============================================================ -->
+<!--
+  Use this structure inside renderSummaryCards():
+
+  `<a class="kpi-card" href="${card.href}">
+    <div class="kpi-card-top">
+      <div class="kpi-icon-wrap">${card.icon}</div>
+      <span class="kpi-delta ${card.up ? 'up' : 'down'}">${card.up ? '▲' : '▼'} ${card.pct}%</span>
+    </div>
+    <div>
+      <div class="kpi-label">${card.label}</div>
+      <div class="kpi-value">${formatCurrency(card.total)}</div>
+    </div>
+    <div class="kpi-spark">${card.sparkSVG}</div>
+  </a>`
+-->
+
+
+<!-- ============================================================
+  4. TABLE ROW — template for expense / settlement tbody rows
+  ============================================================ -->
+<!--
+  <tr>
+    <td>
+      <div class="td-name">
+        <div class="td-avatar" style="background:#EEEEFE;color:#4F46E5;">AF</div>
+        <div>
+          <div class="td-title">Fiber maintenance — Nasr City</div>
+          <div class="td-manager">A. Fawzy</div>
+        </div>
+      </div>
+    </td>
+    <td class="td-mono">CAI-1042</td>
+    <td class="td-value">48,200 EGP</td>
+    <td class="td-mono">12/05/2026</td>
+    <td><span class="badge badge-transfer">Transfer</span></td>
+    <td>
+      <span class="badge badge-success">
+        <span class="badge-dot" style="background:#0B7D57;"></span>
+        Approved
+      </span>
+    </td>
+    <td>Telecom</td>
+    <td class="cell-truncate" style="color:#9AA0AC;">Vendor: Join</td>
+  </tr>
+-->
+
+
+<!-- ============================================================
+  5. STATUS BADGE — all variants
+  ============================================================ -->
+<!-- Approval -->
+<span class="badge badge-success"><span class="badge-dot" style="background:#0B7D57;"></span>Approved</span>
+<span class="badge badge-warning"><span class="badge-dot" style="background:#9A6800;"></span>On hold</span>
+<span class="badge badge-danger"><span class="badge-dot" style="background:#C23A24;"></span>Canceled</span>
+
+<!-- Payment -->
+<span class="badge badge-transfer">Transfer</span>
+<span class="badge badge-cash">Cash</span>
+
+
+<!-- ============================================================
+  6. FILTER BAR — for expenses / settlements / invoices pages
+     Replaces the old .filter-bar markup
+  ============================================================ -->
+<div class="filter-bar">
+  <div class="filter-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+      <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+    </svg>
+    <input id="search-input" type="text" placeholder="Search by name, site ID, or notes…">
+  </div>
+
+  <select id="department-filter" class="filter-select">
+    <option value="">All Departments</option>
+  </select>
+
+  <select id="approval-filter" class="filter-select">
+    <option value="">All Approval</option>
+    <option value="Approved">Approved</option>
+    <option value="Hold">Hold</option>
+    <option value="Canceled">Canceled</option>
+  </select>
+
+  <button type="button" class="btn-secondary">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+    </svg>
+    Export
+  </button>
+
+  <button type="button" class="btn-primary" id="add-expense-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+      <path d="M12 5v14"/><path d="M5 12h14"/>
+    </svg>
+    Add Expense
+  </button>
+</div>
+
+
+<!-- ============================================================
+  7. TABLE WRAPPER — wraps any data table
+  ============================================================ -->
+<div class="table-wrapper">
+  <div class="table-scroll">
+    <table id="expenses-table">
+      <thead>
+        <tr>
+          <th data-field="name">Expense</th>
+          <th data-field="siteId">Site ID</th>
+          <th data-field="value">Value</th>
+          <th data-field="receivedDate">Received</th>
+          <th data-field="paymentMethod">Payment</th>
+          <th data-field="approval">Approval</th>
+          <th data-field="department">Department</th>
+          <th data-field="notes">Notes</th>
+        </tr>
+      </thead>
+      <tbody id="expenses-tbody"></tbody>
+    </table>
+  </div>
+  <div class="table-footer">
+    <span class="table-footer-info" id="record-count"></span>
+    <div class="pagination">
+      <button class="page-btn" disabled>Previous</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">Next</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+  8. EMPTY STATE — shown when a table has no records
+  ============================================================ -->
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+      <path d="M6 2h9l3 3v17l-3-2-3 2-3-2-3 2V2Z"/>
+      <path d="M9 8h6"/><path d="M9 12h6"/>
+    </svg>
+  </div>
+  <h3>No records yet</h3>
+  <p>Add your first entry using the button above and it will appear here.</p>
+</div>

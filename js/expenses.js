@@ -7,7 +7,7 @@
 
   function populateFilterOptions() {
     const deptSelect = document.getElementById('department-filter');
-    Data.DEPARTMENTS.forEach((dept) => {
+    Data.getDepartments().forEach((dept) => {
       deptSelect.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(dept)}">${escapeHtml(dept)}</option>`);
     });
   }
@@ -61,7 +61,7 @@
   }
 
   function paymentLabel(method) {
-    return method === 'transfer' ? 'Transfer' : 'Cash';
+    return method === 'transfer' ? t('payment.transfer') : t('payment.cash');
   }
 
   function renderExpenses() {
@@ -92,15 +92,15 @@
 
     const total = records.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
     document.getElementById('record-count').textContent =
-      `Showing ${records.length} records — Total: ${formatCurrency(total)}`;
+      t('records.summary', { count: records.length, total: formatCurrency(total) });
 
     const tbody = document.getElementById('expenses-tbody');
 
     if (records.length === 0) {
       const isFiltered = filters.search || filters.department || filters.approval || filters.payment;
       const message = isFiltered
-        ? 'No expenses match your search/filters.'
-        : `No expenses found. Click 'Add Expense' to get started.`;
+        ? t('expenses.emptyFiltered')
+        : t('expenses.emptyDefault');
       tbody.innerHTML = `<tr><td colspan="10" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
@@ -111,7 +111,7 @@
           <td>${formatDate(r.receivedDate)}</td>
           <td>${formatDate(r.financeDate)}</td>
           <td><span class="badge ${paymentBadgeClass(r.paymentMethod)}">${paymentLabel(r.paymentMethod)}</span></td>
-          <td><span class="badge ${approvalBadgeClass(r.approval)}">${escapeHtml(r.approval)}</span></td>
+          <td><span class="badge ${approvalBadgeClass(r.approval)}">${t('status.' + r.approval)}</span></td>
           <td>${escapeHtml(r.manager)}</td>
           <td>${escapeHtml(r.department)}</td>
           <td dir="auto" class="cell-truncate" title="${escapeHtml(r.notes)}">${escapeHtml(r.notes)}</td>
@@ -151,11 +151,11 @@
   function expenseFormHtml(record) {
     const r = record || {};
 
-    const managerOptions = Data.EXPENSE_MANAGERS.map((m) =>
+    const managerOptions = Data.getExpenseManagers().map((m) =>
       `<option value="${escapeHtml(m)}" ${r.manager === m ? 'selected' : ''}>${escapeHtml(m)}</option>`
     ).join('');
 
-    const departmentOptions = Data.DEPARTMENTS.map((dept) =>
+    const departmentOptions = Data.getDepartments().map((dept) =>
       `<option value="${escapeHtml(dept)}" ${r.department === dept ? 'selected' : ''}>${escapeHtml(dept)}</option>`
     ).join('');
 
@@ -164,68 +164,68 @@
     ).join('');
 
     const approvalOptions = Data.APPROVAL_STATUSES.map((a) =>
-      `<option value="${escapeHtml(a)}" ${r.approval === a ? 'selected' : ''}>${escapeHtml(a)}</option>`
+      `<option value="${escapeHtml(a)}" ${r.approval === a ? 'selected' : ''}>${escapeHtml(t('status.' + a))}</option>`
     ).join('');
 
     return `
       <div class="form-group">
-        <label>Name</label>
+        <label>${t('common.field.name')}</label>
         <input type="text" id="f-name" dir="auto" value="${escapeHtml(r.name)}">
       </div>
       <div class="form-group">
-        <label>Site ID</label>
+        <label>${t('common.field.siteId')}</label>
         <input type="text" id="f-siteId" dir="auto" value="${escapeHtml(r.siteId)}">
       </div>
       <div class="form-group">
-        <label>Value</label>
+        <label>${t('common.field.value')}</label>
         <input type="number" id="f-value" value="${r.value !== undefined && r.value !== null ? r.value : ''}">
       </div>
       <div class="form-group">
-        <label>Received Date</label>
+        <label>${t('common.field.receivedDate')}</label>
         <input type="date" id="f-receivedDate" value="${record ? formatDateInput(r.receivedDate) : todayIso()}">
       </div>
       <div class="form-group">
-        <label>Signature Date</label>
+        <label>${t('common.field.signatureDate')}</label>
         <input type="date" id="f-signatureDate" value="${formatDateInput(r.signatureDate)}">
       </div>
       <div class="form-group">
-        <label>Finance Date</label>
+        <label>${t('common.field.financeDate')}</label>
         <input type="date" id="f-financeDate" value="${formatDateInput(r.financeDate)}">
       </div>
       <div class="form-group">
-        <label>With</label>
+        <label>${t('common.field.with')}</label>
         <input type="text" id="f-with" dir="auto" value="${escapeHtml(r.with)}">
       </div>
       <div class="form-group">
-        <label>Payment Method</label>
+        <label>${t('common.field.paymentMethod')}</label>
         <select id="f-paymentMethod">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${paymentOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Approval</label>
+        <label>${t('common.field.approval')}</label>
         <select id="f-approval">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${approvalOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Manager</label>
+        <label>${t('common.field.manager')}</label>
         <select id="f-manager">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${managerOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Department</label>
+        <label>${t('common.field.department')}</label>
         <select id="f-department">
-          <option value="">— Select —</option>
+          <option value="">${t('common.select')}</option>
           ${departmentOptions}
         </select>
       </div>
       <div class="form-group">
-        <label>Notes</label>
+        <label>${t('common.field.notes')}</label>
         <textarea id="f-notes" dir="auto" rows="3">${escapeHtml(r.notes)}</textarea>
       </div>
     `;
@@ -241,15 +241,15 @@
 
     let valid = true;
     if (!name) {
-      setFieldError(nameInput, 'Name is required');
+      setFieldError(nameInput, t('common.nameRequired'));
       valid = false;
     }
     if (valueRaw === '' || isNaN(Number(valueRaw))) {
-      setFieldError(valueInput, 'A valid value is required');
+      setFieldError(valueInput, t('common.valueRequired'));
       valid = false;
     }
     if (!valid) {
-      showToast('Please fix the errors below', 'danger');
+      showToast(t('common.fixErrors'), 'danger');
       return;
     }
 
@@ -273,29 +273,29 @@
     Data.saveExpense(record);
     closeModal();
     renderExpenses();
-    showToast(id ? 'Expense updated' : 'Expense added');
+    showToast(id ? t('expenses.toastUpdated') : t('expenses.toastAdded'));
   }
 
   function handleDelete(id) {
-    if (!confirm('Delete this expense?')) return;
+    if (!confirm(t('expenses.confirmDelete'))) return;
     Data.deleteExpense(id);
     closeModal();
     renderExpenses();
-    showToast('Expense deleted');
+    showToast(t('expenses.toastDeleted'));
   }
 
   function openAddModal() {
-    openModal('Add Expense', expenseFormHtml(), [
-      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
-      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(null) }
+    openModal(t('expenses.modalAdd'), expenseFormHtml(), [
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: () => saveFromForm(null) }
     ]);
   }
 
   function openEditModal(record) {
-    openModal('Edit Expense', expenseFormHtml(record), [
-      { label: 'Delete', class: 'btn-secondary', onClick: () => handleDelete(record.id) },
-      { label: 'Cancel', class: 'btn-secondary', onClick: closeModal },
-      { label: 'Save', class: 'btn-primary', onClick: () => saveFromForm(record.id) }
+    openModal(t('expenses.modalEdit'), expenseFormHtml(record), [
+      { label: t('common.delete'), class: 'btn-secondary', onClick: () => handleDelete(record.id) },
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: () => saveFromForm(record.id) }
     ]);
   }
 

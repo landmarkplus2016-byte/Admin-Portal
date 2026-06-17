@@ -216,13 +216,13 @@ function renderBackupBanner() {
   }
 
   const message = lastBackup
-    ? `You haven't backed up in ${days} days.`
-    : `You haven't backed up yet.`;
+    ? t('dashboard.backupOverdue', { days: days })
+    : t('dashboard.backupNever');
 
   container.innerHTML = `
     <div class="backup-warning">
       <span>⚠</span>
-      <span>${message} <a href="pages/settings.html">Go to Settings</a> to export a backup.</span>
+      <span>${message} <a href="pages/settings.html">${t('dashboard.goToSettings')}</a> ${t('dashboard.toExport')}</span>
     </div>
   `;
 }
@@ -232,10 +232,10 @@ function renderSummaryCards() {
   if (!grid) return;
 
   const cards = [
-    { label: 'Settlements', href: 'pages/settlements.html', records: Data.getSettlements(), icon: DASHBOARD_ICONS.settlements },
-    { label: 'Expenses', href: 'pages/expenses.html', records: Data.getExpenses(), icon: DASHBOARD_ICONS.expenses },
-    { label: 'Invoices & Dues', href: 'pages/invoices.html', records: Data.getInvoices(), icon: DASHBOARD_ICONS.invoices },
-    { label: 'Allowances', href: 'pages/allowances.html', records: Data.getAllowances(), icon: DASHBOARD_ICONS.allowances }
+    { label: t('nav.settlements'), href: 'pages/settlements.html', records: Data.getSettlements(), icon: DASHBOARD_ICONS.settlements },
+    { label: t('nav.expenses'), href: 'pages/expenses.html', records: Data.getExpenses(), icon: DASHBOARD_ICONS.expenses },
+    { label: t('nav.invoices'), href: 'pages/invoices.html', records: Data.getInvoices(), icon: DASHBOARD_ICONS.invoices },
+    { label: t('nav.allowances'), href: 'pages/allowances.html', records: Data.getAllowances(), icon: DASHBOARD_ICONS.allowances }
   ];
 
   grid.innerHTML = cards.map((card) => {
@@ -246,7 +246,7 @@ function renderSummaryCards() {
         ${card.icon}
         <div class="summary-card-label">${card.label}</div>
         <div class="summary-card-value">${formatCurrency(total)}</div>
-        <div class="summary-card-count">${count} records</div>
+        <div class="summary-card-count">${t('dashboard.records', { count: count })}</div>
       </a>
     `;
   }).join('');
@@ -262,9 +262,9 @@ function renderQuickStats() {
   });
 
   container.innerHTML = `
-    <div class="quick-stat">Approved expenses: <span class="badge badge-success">${counts.Approved}</span></div>
-    <div class="quick-stat">Hold: <span class="badge badge-warning">${counts.Hold}</span></div>
-    <div class="quick-stat">Canceled: <span class="badge badge-danger">${counts.Canceled}</span></div>
+    <div class="quick-stat">${t('dashboard.quickApproved')} <span class="badge badge-success">${counts.Approved}</span></div>
+    <div class="quick-stat">${t('dashboard.quickHold')} <span class="badge badge-warning">${counts.Hold}</span></div>
+    <div class="quick-stat">${t('dashboard.quickCanceled')} <span class="badge badge-danger">${counts.Canceled}</span></div>
   `;
 }
 

@@ -8,31 +8,103 @@
     expenses:    'hrap_expenses',
     invoices:    'hrap_invoices',
     allowances:  'hrap_allowances',
-    meta:        'hrap_meta'
+    meta:        'hrap_meta',
+    lists:       'hrap_lists',
+    lang:        'hrap_lang'
   };
 
-  const DEPARTMENTS = [
-    'AQ', 'Con', 'Plus', 'Telecom', 'Mark', 'Transportation Mark',
-    'Transportation Plus', 'Fabrications', 'Acc', 'IT', 'Safety T', 'Safety C'
-  ];
+  // Editable lists — managed from the Settings page. Seeded once with these
+  // defaults, then everything after that lives in localStorage.
+  const LIST_DEFS = {
+    departments: 'list.departments',
+    settlementEngineers: 'list.settlementEngineers',
+    expenseManagers: 'list.expenseManagers',
+    contractors: 'list.contractors'
+  };
 
-  const SETTLEMENT_ENGINEERS = [
-    'Shady', 'Amr', 'Fleet', 'Mohannad', 'Mostafa',
-    'Birary', 'Amr Sabry', 'Ayman', 'Amer', 'Hussein'
-  ];
-
-  const EXPENSE_MANAGERS = [
-    'A. Fawzy', 'A. Talaat', 'A. Ali', 'Mohsen', 'Amr Refaat',
-    'S. Kamel', 'Asem', 'Ibrahim', 'Emad', 'Khodary', 'Khaled', 'Tariq', 'Kassem',
-    'Sameh', 'Shrief', 'Dalia', 'Taha', 'M. Amin', 'A. Tawfik', 'Ibrahim Habib',
-    'Rana', 'Osama C', 'Osama T', 'Saad'
-  ];
-
-  const CONTRACTORS = ['Join', 'Star Tech', 'Almotaheda', 'Basic', 'Otak', 'GSEC'];
+  const DEFAULT_LISTS = {
+    departments: [
+      'AQ', 'Con', 'Plus', 'Telecom', 'Mark', 'Transportation Mark',
+      'Transportation Plus', 'Fabrications', 'Acc', 'IT', 'Safety T', 'Safety C'
+    ],
+    settlementEngineers: [
+      'Shady', 'Amr', 'Fleet', 'Mohannad', 'Mostafa',
+      'Birary', 'Amr Sabry', 'Ayman', 'Amer', 'Hussein'
+    ],
+    expenseManagers: [
+      'A. Fawzy', 'A. Talaat', 'A. Ali', 'Mohsen', 'Amr Refaat',
+      'S. Kamel', 'Asem', 'Ibrahim', 'Emad', 'Khodary', 'Khaled', 'Tariq', 'Kassem',
+      'Sameh', 'Shrief', 'Dalia', 'Taha', 'M. Amin', 'A. Tawfik', 'Ibrahim Habib',
+      'Rana', 'Osama C', 'Osama T', 'Saad'
+    ],
+    contractors: ['Join', 'Star Tech', 'Almotaheda', 'Basic', 'Otak', 'GSEC']
+  };
 
   const APPROVAL_STATUSES = ['Approved', 'Hold', 'Canceled'];
   const INVOICE_APPROVAL_STATUSES = ['Approved', 'Rejected'];
   const PAYMENT_METHODS = ['transfer', 'cash'];
+
+  // ---- editable lists ----
+
+  function getLists() {
+    const raw = localStorage.getItem(KEYS.lists);
+    let lists;
+    if (!raw) {
+      lists = {};
+    } else {
+      try {
+        lists = JSON.parse(raw) || {};
+      } catch (e) {
+        lists = {};
+      }
+    }
+    let changed = !raw;
+    Object.keys(DEFAULT_LISTS).forEach(function (key) {
+      if (!Array.isArray(lists[key])) {
+        lists[key] = DEFAULT_LISTS[key].slice();
+        changed = true;
+      }
+    });
+    if (changed) {
+      localStorage.setItem(KEYS.lists, JSON.stringify(lists));
+    }
+    return lists;
+  }
+
+  function getList(key) {
+    return getLists()[key] || [];
+  }
+
+  function addListItem(key, value) {
+    const trimmed = (value || '').trim();
+    if (!trimmed) return false;
+    const lists = getLists();
+    const items = lists[key] || [];
+    const exists = items.some(function (item) {
+      return item.toLowerCase() === trimmed.toLowerCase();
+    });
+    if (exists) return false;
+    items.push(trimmed);
+    lists[key] = items;
+    localStorage.setItem(KEYS.lists, JSON.stringify(lists));
+    return true;
+  }
+
+  function removeListItem(key, value) {
+    const lists = getLists();
+    lists[key] = (lists[key] || []).filter(function (item) { return item !== value; });
+    localStorage.setItem(KEYS.lists, JSON.stringify(lists));
+  }
+
+  // ---- language ----
+
+  function getLanguage() {
+    return localStorage.getItem(KEYS.lang) || 'en';
+  }
+
+  function setLanguage(lang) {
+    localStorage.setItem(KEYS.lang, lang);
+  }
 
   // ---- low-level storage helpers ----
 
@@ -195,13 +267,24 @@
 
   window.Data = {
     KEYS: KEYS,
-    DEPARTMENTS: DEPARTMENTS,
-    SETTLEMENT_ENGINEERS: SETTLEMENT_ENGINEERS,
-    EXPENSE_MANAGERS: EXPENSE_MANAGERS,
-    CONTRACTORS: CONTRACTORS,
+    LIST_DEFS: LIST_DEFS,
     APPROVAL_STATUSES: APPROVAL_STATUSES,
     INVOICE_APPROVAL_STATUSES: INVOICE_APPROVAL_STATUSES,
     PAYMENT_METHODS: PAYMENT_METHODS,
+
+    // editable lists
+    getLists: getLists,
+    getList: getList,
+    addListItem: addListItem,
+    removeListItem: removeListItem,
+    getDepartments: function () { return getList('departments'); },
+    getSettlementEngineers: function () { return getList('settlementEngineers'); },
+    getExpenseManagers: function () { return getList('expenseManagers'); },
+    getContractors: function () { return getList('contractors'); },
+
+    // language
+    getLanguage: getLanguage,
+    setLanguage: setLanguage,
 
     // settlements
     getSettlements: function () { return getActive(KEYS.settlements); },
