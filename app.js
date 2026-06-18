@@ -1,3 +1,90 @@
+// ---------- Theme switcher ----------
+
+const PALETTES = {
+  indigo: { accent: '#4F46E5', soft: '#EEEEFE' },
+  sky: { accent: '#2563EB', soft: '#E8F0FE' },
+  emerald: { accent: '#0E9F6E', soft: '#E4F6EF' },
+  violet: { accent: '#7C3AED', soft: '#F2EBFE' },
+  amber: { accent: '#C2620B', soft: '#FBEFE0' }
+};
+
+function setTheme(key) {
+  const p = PALETTES[key] || PALETTES.indigo;
+  document.documentElement.style.setProperty('--accent', p.accent);
+  document.documentElement.style.setProperty('--accent-soft', p.soft);
+  localStorage.setItem('hrap_theme', key);
+  document.querySelectorAll('[data-theme-btn]').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.themeBtn === key);
+  });
+}
+
+// ---------- Language / RTL toggle ----------
+// Wired to Data.setLanguage so it drives the existing js/i18n.js translation
+// system (data-i18n attributes) instead of only flipping direction/font.
+
+function setLang(lang) {
+  const changed = Data.getLanguage() !== lang;
+
+  document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', lang);
+  document.body.style.fontFamily = lang === 'ar'
+    ? "'IBM Plex Sans Arabic', 'IBM Plex Sans', sans-serif"
+    : "'IBM Plex Sans', system-ui, sans-serif";
+
+  document.querySelectorAll('[data-lang-btn]').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.langBtn === lang);
+  });
+
+  if (changed) {
+    Data.setLanguage(lang);
+    window.location.reload();
+  } else if (window.applyStaticTranslations) {
+    window.applyStaticTranslations();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTheme(localStorage.getItem('hrap_theme') || 'indigo');
+  setLang(Data.getLanguage());
+  document.querySelectorAll('[data-theme-btn]').forEach((btn) => {
+    btn.addEventListener('click', () => setTheme(btn.dataset.themeBtn));
+  });
+  document.querySelectorAll('[data-lang-btn]').forEach((btn) => {
+    btn.addEventListener('click', () => setLang(btn.dataset.langBtn));
+  });
+});
+
+// ---------- Sidebar live status (nav badges + backup card) ----------
+
+function renderSidebarStatus() {
+  const expenseBadge = document.getElementById('nav-badge-expenses');
+  if (expenseBadge) expenseBadge.textContent = Data.getExpenses().length;
+
+  const invoiceBadge = document.getElementById('nav-badge-invoices');
+  if (invoiceBadge) invoiceBadge.textContent = Data.getInvoices().length;
+
+  const titleEl = document.getElementById('sidebar-backup-title');
+  const subEl = document.getElementById('sidebar-backup-sub');
+  const dotEl = document.getElementById('sidebar-backup-dot');
+  if (!titleEl || !subEl || !dotEl) return;
+
+  const lastBackup = Data.getLastBackupDate();
+  let days = null;
+  if (lastBackup) {
+    days = Math.floor((Date.now() - new Date(lastBackup).getTime()) / (1000 * 60 * 60 * 24));
+  }
+  const overdue = !lastBackup || days > 7;
+
+  titleEl.textContent = overdue ? t('sidebar.backupOverdueTitle') : t('sidebar.backupHealthyTitle');
+  subEl.textContent = !lastBackup
+    ? t('sidebar.backupNeverSub')
+    : (days <= 0 ? t('sidebar.backupTodaySub') : t('sidebar.backupDaysSub', { days: days }));
+  dotEl.style.background = overdue ? '#D9920A' : '#2BB673';
+  dotEl.style.boxShadow = overdue ? '0 0 0 3px rgba(217,146,10,0.18)' : '0 0 0 3px rgba(43,182,115,0.18)';
+}
+
+document.addEventListener('DOMContentLoaded', renderSidebarStatus);
+
 // ---------- Active nav highlighting ----------
 
 document.addEventListener('DOMContentLoaded', () => {

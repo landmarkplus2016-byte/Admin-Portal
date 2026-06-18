@@ -6,75 +6,197 @@
   <title>Settlements — HR Admin Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
   <div class="layout">
     <aside class="sidebar">
-      <div class="sidebar-logo">HR Admin Portal</div>
-      <nav>
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-mark">H</div>
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name" data-i18n="app.name">HR Admin Portal</span>
+          <span class="sidebar-logo-sub" data-i18n="sidebar.subLabel">HR PORTAL</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label" data-i18n="sidebar.menuLabel">Menu</div>
+
+      <nav class="sidebar-nav">
         <a href="../index.html" class="nav-item">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg>
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/>
+              <rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/>
+            </svg>
+          </span>
           <span data-i18n="nav.dashboard">Dashboard</span>
         </a>
+
         <a href="settlements.html" class="nav-item">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg>
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <path d="M3 7h18"/><path d="M3 12h18"/><path d="M3 17h12"/>
+            </svg>
+          </span>
           <span data-i18n="nav.settlements">Settlements</span>
         </a>
+
         <a href="expenses.html" class="nav-item">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l3 3v17l-3-2-3 2-3-2-3 2V2Z"></path><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg>
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <path d="M6 2h9l3 3v17l-3-2-3 2-3-2-3 2V2Z"/><path d="M9 8h6"/><path d="M9 12h6"/>
+            </svg>
+          </span>
           <span data-i18n="nav.expenses">Expenses</span>
+          <span class="nav-badge" id="nav-badge-expenses">0</span>
         </a>
+
         <a href="invoices.html" class="nav-item">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg>
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/>
+              <path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h4"/>
+            </svg>
+          </span>
           <span data-i18n="nav.invoices">Invoices &amp; Dues</span>
+          <span class="nav-badge" id="nav-badge-invoices">0</span>
         </a>
+
         <a href="allowances.html" class="nav-item">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="1"></rect><path d="M12 8v13"></path><path d="M3 12h18"></path><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"></path></svg>
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M12 8v13"/><path d="M3 12h18"/>
+              <path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/>
+            </svg>
+          </span>
           <span data-i18n="nav.allowances">Allowances</span>
         </a>
+
         <a href="settings.html" class="nav-item">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3a2 2 0 1 1 0-4h.2a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 2.7-1.1V3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.4 1Z"/>
+            </svg>
+          </span>
           <span data-i18n="nav.settings">Settings</span>
         </a>
       </nav>
-    </aside>
-    <div class="main">
-      <div class="topbar">
-        <div class="page-title" data-i18n="settlements.title">Settlements</div>
-        <button type="button" class="btn-secondary lang-toggle-btn" id="lang-toggle-btn">العربية</button>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-backup-card">
+          <div class="sidebar-backup-header">
+            <span class="sidebar-backup-dot" id="sidebar-backup-dot"></span>
+            <span class="sidebar-backup-title" id="sidebar-backup-title">Backup healthy</span>
+          </div>
+          <div class="sidebar-backup-sub" id="sidebar-backup-sub">Last export 2 days ago</div>
+        </div>
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">A</div>
+          <div>
+            <div class="sidebar-user-name" data-i18n="sidebar.userName">Admin</div>
+            <div class="sidebar-user-role" data-i18n="sidebar.userRole">Administrator</div>
+          </div>
+        </div>
       </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-title-group">
+          <span class="page-title" data-i18n="settlements.title">Settlements</span>
+          <span class="page-sub" data-i18n="settlements.subtitle">Track employee settlement payments</span>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="topbar-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input type="text" data-i18n-placeholder="common.searchAnything" placeholder="Search anything…" aria-label="Search">
+          </div>
+
+          <div class="palette-switcher">
+            <button class="palette-dot palette-dot-indigo" data-theme-btn="indigo" title="Indigo"></button>
+            <button class="palette-dot palette-dot-sky" data-theme-btn="sky" title="Sky"></button>
+            <button class="palette-dot palette-dot-emerald" data-theme-btn="emerald" title="Emerald"></button>
+            <button class="palette-dot palette-dot-violet" data-theme-btn="violet" title="Violet"></button>
+            <button class="palette-dot palette-dot-amber" data-theme-btn="amber" title="Amber"></button>
+          </div>
+
+          <div class="lang-toggle">
+            <button class="lang-btn" data-lang-btn="en">EN</button>
+            <button class="lang-btn" data-lang-btn="ar">ع</button>
+          </div>
+
+          <button class="topbar-bell" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+            </svg>
+            <span class="topbar-bell-dot"></span>
+          </button>
+        </div>
+      </header>
+
       <div class="content">
-        <div class="filter-bar">
-          <input type="text" id="search-input" class="search-input" data-i18n-placeholder="settlements.searchPlaceholder" placeholder="Search by name or notes...">
-          <select id="department-filter" class="filter-select">
-            <option value="" data-i18n="settlements.allDepartments">All Departments</option>
-          </select>
-          <select id="engineer-filter" class="filter-select">
-            <option value="" data-i18n="settlements.allEngineers">All Engineers</option>
-          </select>
-          <button type="button" class="btn-primary" id="add-settlement-btn" data-i18n="settlements.addButton">Add Settlement</button>
-        </div>
-        <div class="table-meta-row">
-          <div class="record-count" id="record-count"></div>
-        </div>
-        <div class="table-wrapper">
-          <table id="settlements-table">
-            <thead>
-              <tr>
-                <th data-field="name" data-i18n="common.field.name">Name</th>
-                <th data-field="value" data-i18n="common.field.value">Value</th>
-                <th data-field="engineer" data-i18n="common.field.engineer">Engineer</th>
-                <th data-field="receivedDate" data-i18n="common.field.receivedDate">Received Date</th>
-                <th data-field="signatureDate" data-i18n="common.field.signatureDate">Signature Date</th>
-                <th data-field="financeDate" data-i18n="common.field.financeDate">Finance Date</th>
-                <th data-field="department" data-i18n="common.field.department">Department</th>
-                <th data-field="notes" data-i18n="common.field.notes">Notes</th>
-              </tr>
-            </thead>
-            <tbody id="settlements-tbody"></tbody>
-          </table>
+        <div class="content-inner">
+          <div class="filter-bar">
+            <div class="filter-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+              </svg>
+              <input type="text" id="search-input" data-i18n-placeholder="settlements.searchPlaceholder" placeholder="Search by name or notes...">
+            </div>
+            <select id="department-filter" class="filter-select">
+              <option value="" data-i18n="settlements.allDepartments">All Departments</option>
+            </select>
+            <select id="engineer-filter" class="filter-select">
+              <option value="" data-i18n="settlements.allEngineers">All Engineers</option>
+            </select>
+            <button type="button" class="btn-secondary" id="export-settlements-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+              </svg>
+              <span data-i18n="common.export">Export</span>
+            </button>
+            <button type="button" class="btn-primary" id="add-settlement-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <path d="M12 5v14"/><path d="M5 12h14"/>
+              </svg>
+              <span data-i18n="settlements.addButton">Add Settlement</span>
+            </button>
+          </div>
+
+          <div class="table-wrapper">
+            <div class="table-scroll">
+              <table id="settlements-table">
+                <thead>
+                  <tr>
+                    <th data-field="name" data-i18n="common.field.name">Name</th>
+                    <th data-field="value" data-i18n="common.field.value">Value</th>
+                    <th data-field="engineer" data-i18n="common.field.engineer">Engineer</th>
+                    <th data-field="receivedDate" data-i18n="common.field.receivedDate">Received Date</th>
+                    <th data-field="signatureDate" data-i18n="common.field.signatureDate">Signature Date</th>
+                    <th data-field="financeDate" data-i18n="common.field.financeDate">Finance Date</th>
+                    <th data-field="department" data-i18n="common.field.department">Department</th>
+                    <th data-field="notes" data-i18n="common.field.notes">Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="settlements-tbody"></tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span class="table-footer-info" id="record-count"></span>
+              <div class="pagination">
+                <button class="page-btn" disabled data-i18n="common.previous">Previous</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn" data-i18n="common.next">Next</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
