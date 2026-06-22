@@ -88,7 +88,7 @@
       const message = isFiltered
         ? t('invoices.emptyFiltered')
         : t('invoices.emptyDefault');
-      tbody.innerHTML = `<tr><td colspan="9" class="empty-state">${message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="16" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
         <tr data-id="${escapeHtml(r.id)}">
@@ -96,8 +96,15 @@
           <td>${escapeHtml(r.invoiceNo)}</td>
           <td dir="auto">${escapeHtml(r.siteId)}</td>
           <td>${formatCurrency(r.value)}</td>
+          <td>${formatDate(r.receivedDate)}</td>
           <td dir="auto">${escapeHtml(r.coordinator)}</td>
+          <td>${formatDate(r.coordinatorDate)}</td>
+          <td>${formatDate(r.coordinatorFinished)}</td>
           <td>${escapeHtml(r.vfCode)}</td>
+          <td>${formatDate(r.aliaaDate)}</td>
+          <td>${formatDate(r.aliaaFinished)}</td>
+          <td>${formatDate(r.ashrafDate)}</td>
+          <td>${formatDate(r.ashrafFinished)}</td>
           <td>${formatDate(r.financeDate)}</td>
           <td><span class="badge ${approvalBadgeClass(r.approval)}">${t('status.' + r.approval)}</span></td>
           <td dir="auto" class="cell-truncate" title="${escapeHtml(r.notes)}">${escapeHtml(r.notes)}</td>

@@ -101,7 +101,7 @@
       const message = isFiltered
         ? t('expenses.emptyFiltered')
         : t('expenses.emptyDefault');
-      tbody.innerHTML = `<tr><td colspan="10" class="empty-state">${message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="11" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
         <tr data-id="${escapeHtml(r.id)}">
@@ -109,6 +109,7 @@
           <td dir="auto">${escapeHtml(r.siteId)}</td>
           <td>${formatCurrency(r.value)}</td>
           <td>${formatDate(r.receivedDate)}</td>
+          <td>${formatDate(r.signatureDate)}</td>
           <td>${formatDate(r.financeDate)}</td>
           <td><span class="badge ${paymentBadgeClass(r.paymentMethod)}">${paymentLabel(r.paymentMethod)}</span></td>
           <td><span class="badge ${approvalBadgeClass(r.approval)}">${t('status.' + r.approval)}</span></td>
