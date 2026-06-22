@@ -136,11 +136,11 @@
   function settlementFormHtml(record) {
     const r = record || {};
 
-    const engineerOptions = Data.SETTLEMENT_ENGINEERS.map((eng) =>
+    const engineerOptions = Data.getSettlementEngineers().map((eng) =>
       `<option value="${escapeHtml(eng)}" ${r.engineer === eng ? 'selected' : ''}>${escapeHtml(eng)}</option>`
     ).join('');
 
-    const departmentOptions = Data.DEPARTMENTS.map((dept) =>
+    const departmentOptions = Data.getDepartments().map((dept) =>
       `<option value="${escapeHtml(dept)}" ${r.department === dept ? 'selected' : ''}>${escapeHtml(dept)}</option>`
     ).join('');
 

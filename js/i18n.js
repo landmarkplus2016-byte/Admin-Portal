@@ -204,7 +204,7 @@
 
       'nav.dashboard': 'الرئيسية',
       'nav.settlements': 'التسويات',
-      'nav.expenses': 'المصروفات',
+      'nav.expenses': 'العهد',
       'nav.invoices': 'الفواتير والمستحقات',
       'nav.allowances': 'البدلات',
       'nav.settings': 'الإعدادات',
@@ -225,7 +225,7 @@
       'common.searchAnything': 'بحث عن أي شيء...',
       'dashboard.subtitle': 'نظرة عامة على جميع الأقسام',
       'settlements.subtitle': 'تتبع مدفوعات تسوية الموظفين',
-      'expenses.subtitle': 'إدارة سجلات المصروفات الميدانية',
+      'expenses.subtitle': 'إدارة سجلات العهد الميدانية',
       'invoices.subtitle': 'تتبع فواتير ومستحقات المتعهدين',
       'allowances.subtitle': 'إدارة البدلات والمخزون والمكافآت',
       'settings.subtitle': 'النسخ الاحتياطي والاستعادة وإدارة البيانات',
@@ -278,7 +278,7 @@
       'dashboard.goToSettings': 'اذهب إلى الإعدادات',
       'dashboard.toExport': 'لتصدير نسخة احتياطية.',
       'dashboard.records': '{count} سجل',
-      'dashboard.quickApproved': 'مصروفات معتمدة:',
+      'dashboard.quickApproved': 'عهد معتمدة:',
       'dashboard.quickHold': 'معلقة:',
       'dashboard.quickCanceled': 'ملغاة:',
 
@@ -296,20 +296,20 @@
       'settlements.toastDeleted': 'تم حذف التسوية',
       'settlements.confirmDelete': 'حذف هذه التسوية؟',
 
-      'expenses.title': 'المصروفات',
+      'expenses.title': 'العهد',
       'expenses.searchPlaceholder': 'بحث بالاسم أو رقم الموقع أو الملاحظات...',
       'expenses.allDepartments': 'كل الأقسام',
       'expenses.allApproval': 'كل الحالات',
       'expenses.allPayment': 'كل طرق الدفع',
-      'expenses.addButton': 'إضافة مصروف',
-      'expenses.emptyDefault': "لا توجد مصروفات. اضغط 'إضافة مصروف' للبدء.",
-      'expenses.emptyFiltered': 'لا توجد مصروفات تطابق البحث/الفلاتر.',
-      'expenses.modalAdd': 'إضافة مصروف',
-      'expenses.modalEdit': 'تعديل مصروف',
-      'expenses.toastAdded': 'تمت إضافة المصروف',
-      'expenses.toastUpdated': 'تم تحديث المصروف',
-      'expenses.toastDeleted': 'تم حذف المصروف',
-      'expenses.confirmDelete': 'حذف هذا المصروف؟',
+      'expenses.addButton': 'إضافة عهدة',
+      'expenses.emptyDefault': "لا توجد عهد. اضغط 'إضافة عهدة' للبدء.",
+      'expenses.emptyFiltered': 'لا توجد عهد تطابق البحث/الفلاتر.',
+      'expenses.modalAdd': 'إضافة عهدة',
+      'expenses.modalEdit': 'تعديل عهدة',
+      'expenses.toastAdded': 'تمت إضافة العهدة',
+      'expenses.toastUpdated': 'تم تحديث العهدة',
+      'expenses.toastDeleted': 'تم حذف العهدة',
+      'expenses.confirmDelete': 'حذف هذه العهدة؟',
 
       'invoices.title': 'الفواتير والمستحقات',
       'invoices.searchPlaceholder': 'بحث بالمتعهد أو رقم الفاتورة أو رقم الموقع أو الملاحظات...',
@@ -369,7 +369,7 @@
       'settings.restore.modalWarning': 'سيؤدي هذا إلى حذف كل البيانات الحالية واستبدالها بالنسخة الاحتياطية.',
       'settings.restore.modalCannotUndo': 'لا يمكن التراجع عن هذا الإجراء.',
       'settings.restore.yesButton': 'نعم، استعادة',
-      'settings.restore.toastSummary': 'تمت الاستعادة: {settlements} تسوية، {expenses} مصروف، {invoices} فاتورة، {allowances} بدل',
+      'settings.restore.toastSummary': 'تمت الاستعادة: {settlements} تسوية، {expenses} عهدة، {invoices} فاتورة، {allowances} بدل',
       'settings.restore.toastSuccess': 'تمت استعادة البيانات بنجاح',
 
       'settings.currentData.title': 'البيانات الحالية',
@@ -389,7 +389,7 @@
 
       'list.departments': 'الأقسام',
       'list.settlementEngineers': 'المهندسون (التسويات/البدلات)',
-      'list.expenseManagers': 'مسؤولو المصروفات',
+      'list.expenseManagers': 'مسؤولو العهد',
       'list.contractors': 'المتعهدون'
     }
   };
