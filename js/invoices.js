@@ -4,6 +4,7 @@
 
   let sortField = 'receivedDate';
   let sortDir = 'desc';
+  let selectedIds = new Set();
 
   function populateFilterOptions() {
     const contractorSelect = document.getElementById('contractor-filter');
@@ -58,6 +59,9 @@
     const filters = getFilters();
     let records = Data.getInvoices();
 
+    const liveIds = new Set(records.map((r) => r.id));
+    selectedIds.forEach((id) => { if (!liveIds.has(id)) selectedIds.delete(id); });
+
     if (filters.search) {
       records = records.filter((r) =>
         (r.contractor || '').toLowerCase().includes(filters.search) ||
@@ -88,10 +92,11 @@
       const message = isFiltered
         ? t('invoices.emptyFiltered')
         : t('invoices.emptyDefault');
-      tbody.innerHTML = `<tr><td colspan="16" class="empty-state">${message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="17" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
         <tr data-id="${escapeHtml(r.id)}">
+          <td class="td-checkbox"><input type="checkbox" class="row-checkbox" data-id="${escapeHtml(r.id)}" ${selectedIds.has(r.id) ? 'checked' : ''}></td>
           <td dir="auto" class="cell-truncate" title="${escapeHtml(r.contractor)}">${escapeHtml(r.contractor)}</td>
           <td>${escapeHtml(r.invoiceNo)}</td>
           <td dir="auto">${escapeHtml(r.siteId)}</td>
@@ -114,6 +119,145 @@
 
     updateSortIndicators();
     attachRowListeners();
+    attachCheckboxListeners();
+    updateSelectAllState();
+    updateBulkBar();
+  }
+
+  // ---- bulk selection ----
+
+  function attachCheckboxListeners() {
+    document.querySelectorAll('#invoices-tbody .row-checkbox').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) selectedIds.add(cb.dataset.id);
+        else selectedIds.delete(cb.dataset.id);
+        updateSelectAllState();
+        updateBulkBar();
+      });
+    });
+  }
+
+  function updateSelectAllState() {
+    const selectAll = document.getElementById('select-all-checkbox');
+    if (!selectAll) return;
+    const checkboxes = document.querySelectorAll('#invoices-tbody .row-checkbox');
+    const total = checkboxes.length;
+    const checked = document.querySelectorAll('#invoices-tbody .row-checkbox:checked').length;
+    selectAll.checked = total > 0 && checked === total;
+    selectAll.indeterminate = checked > 0 && checked < total;
+  }
+
+  function updateBulkBar() {
+    const bar = document.getElementById('bulk-bar');
+    const countEl = document.getElementById('bulk-bar-count');
+    if (!bar || !countEl) return;
+    bar.classList.toggle('hidden', selectedIds.size === 0);
+    countEl.textContent = t('common.selected', { count: selectedIds.size });
+  }
+
+  function bulkEditFormHtml() {
+    const approvalOptions = Data.INVOICE_APPROVAL_STATUSES.map((a) =>
+      `<option value="${escapeHtml(a)}">${escapeHtml(t('status.' + a))}</option>`
+    ).join('');
+
+    return `
+      <p>${t('common.bulkEditHint')}</p>
+      <div class="form-group">
+        <label>${t('common.field.receivedDate')}</label>
+        <input type="date" id="bulk-receivedDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.coordinator')}</label>
+        <input type="text" id="bulk-coordinator" dir="auto">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.coordinatorDate')}</label>
+        <input type="date" id="bulk-coordinatorDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.coordinatorFinished')}</label>
+        <input type="date" id="bulk-coordinatorFinished">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.vfCode')}</label>
+        <input type="text" id="bulk-vfCode">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.aliaaDate')}</label>
+        <input type="date" id="bulk-aliaaDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.aliaaFinished')}</label>
+        <input type="date" id="bulk-aliaaFinished">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.ashrafDate')}</label>
+        <input type="date" id="bulk-ashrafDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.ashrafFinished')}</label>
+        <input type="date" id="bulk-ashrafFinished">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.financeDate')}</label>
+        <input type="date" id="bulk-financeDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.approval')}</label>
+        <select id="bulk-approval">
+          <option value="">${t('common.noChange')}</option>
+          ${approvalOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.with')}</label>
+        <input type="text" id="bulk-with" dir="auto">
+      </div>
+    `;
+  }
+
+  function saveBulkEdit() {
+    const patch = {};
+    const fieldIds = [
+      'receivedDate', 'coordinatorDate', 'coordinatorFinished',
+      'aliaaDate', 'aliaaFinished', 'ashrafDate', 'ashrafFinished', 'financeDate'
+    ];
+    fieldIds.forEach((field) => {
+      const val = document.getElementById('bulk-' + field).value;
+      if (val) patch[field] = val;
+    });
+
+    const coordinator = document.getElementById('bulk-coordinator').value.trim();
+    const vfCode = document.getElementById('bulk-vfCode').value.trim();
+    const withVal = document.getElementById('bulk-with').value.trim();
+    const approval = document.getElementById('bulk-approval').value;
+
+    if (coordinator) patch.coordinator = coordinator;
+    if (vfCode) patch.vfCode = vfCode;
+    if (withVal) patch.with = withVal;
+    if (approval) patch.approval = approval;
+
+    if (Object.keys(patch).length === 0) {
+      showToast(t('common.noFieldsChanged'), 'danger');
+      return;
+    }
+
+    const count = selectedIds.size;
+    selectedIds.forEach((id) => {
+      Data.saveInvoice(Object.assign({ id: id }, patch));
+    });
+    selectedIds.clear();
+    closeModal();
+    renderInvoices();
+    showToast(t('common.bulkUpdated', { count: count }));
+  }
+
+  function openBulkEditModal() {
+    if (selectedIds.size === 0) return;
+    openModal(t('common.bulkEditTitle', { count: selectedIds.size }), bulkEditFormHtml(), [
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: saveBulkEdit }
+    ]);
   }
 
   function attachHeaderListeners() {
@@ -133,7 +277,8 @@
 
   function attachRowListeners() {
     document.querySelectorAll('#invoices-tbody tr[data-id]').forEach((tr) => {
-      tr.addEventListener('click', () => {
+      tr.addEventListener('click', (e) => {
+        if (e.target.closest('.td-checkbox')) return;
         const id = tr.dataset.id;
         const record = Data.getInvoices().find((r) => r.id === id);
         if (record) openEditModal(record);
@@ -350,6 +495,21 @@
     document.getElementById('contractor-filter').addEventListener('change', renderInvoices);
     document.getElementById('approval-filter').addEventListener('change', renderInvoices);
     document.getElementById('add-invoice-btn').addEventListener('click', openAddModal);
+
+    document.getElementById('select-all-checkbox').addEventListener('change', (e) => {
+      const checked = e.target.checked;
+      document.querySelectorAll('#invoices-tbody .row-checkbox').forEach((cb) => {
+        cb.checked = checked;
+        if (checked) selectedIds.add(cb.dataset.id);
+        else selectedIds.delete(cb.dataset.id);
+      });
+      updateBulkBar();
+    });
+    document.getElementById('bulk-clear-btn').addEventListener('click', () => {
+      selectedIds.clear();
+      renderInvoices();
+    });
+    document.getElementById('bulk-edit-btn').addEventListener('click', openBulkEditModal);
 
     renderInvoices();
   }

@@ -172,11 +172,20 @@
             </button>
           </div>
 
+          <div class="bulk-bar hidden" id="bulk-bar">
+            <span class="bulk-bar-count" id="bulk-bar-count"></span>
+            <div class="bulk-bar-actions">
+              <button type="button" class="btn-secondary" id="bulk-clear-btn" data-i18n="common.clearSelection">Clear</button>
+              <button type="button" class="btn-primary" id="bulk-edit-btn" data-i18n="common.bulkEdit">Bulk Edit</button>
+            </div>
+          </div>
+
           <div class="table-wrapper">
             <div class="table-scroll">
               <table id="invoices-table">
                 <thead>
                   <tr>
+                    <th class="th-checkbox"><input type="checkbox" class="select-all-checkbox" id="select-all-checkbox" aria-label="Select all"></th>
                     <th data-field="contractor" data-i18n="common.field.contractor">Contractor</th>
                     <th data-field="invoiceNo" data-i18n="invoices.colInvoiceNo">Inv. No.</th>
                     <th data-field="siteId" data-i18n="common.field.siteId">Site ID</th>

@@ -4,6 +4,7 @@
 
   let sortField = 'receivedDate';
   let sortDir = 'desc';
+  let selectedIds = new Set();
 
   function populateFilterOptions() {
     const deptSelect = document.getElementById('department-filter');
@@ -57,6 +58,9 @@
     const filters = getFilters();
     let records = Data.getAllowances();
 
+    const liveIds = new Set(records.map((r) => r.id));
+    selectedIds.forEach((id) => { if (!liveIds.has(id)) selectedIds.delete(id); });
+
     if (filters.search) {
       records = records.filter((r) =>
         (r.name || '').toLowerCase().includes(filters.search)
@@ -84,10 +88,11 @@
       const message = isFiltered
         ? t('allowances.emptyFiltered')
         : t('allowances.emptyDefault');
-      tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="empty-state">${message}</td></tr>`;
     } else {
       tbody.innerHTML = records.map((r) => `
         <tr data-id="${escapeHtml(r.id)}">
+          <td class="td-checkbox"><input type="checkbox" class="row-checkbox" data-id="${escapeHtml(r.id)}" ${selectedIds.has(r.id) ? 'checked' : ''}></td>
           <td dir="auto" class="cell-truncate" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</td>
           <td>${formatCurrency(r.value)}</td>
           <td>${escapeHtml(r.engineer)}</td>
@@ -101,6 +106,117 @@
 
     updateSortIndicators();
     attachRowListeners();
+    attachCheckboxListeners();
+    updateSelectAllState();
+    updateBulkBar();
+  }
+
+  // ---- bulk selection ----
+
+  function attachCheckboxListeners() {
+    document.querySelectorAll('#allowances-tbody .row-checkbox').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) selectedIds.add(cb.dataset.id);
+        else selectedIds.delete(cb.dataset.id);
+        updateSelectAllState();
+        updateBulkBar();
+      });
+    });
+  }
+
+  function updateSelectAllState() {
+    const selectAll = document.getElementById('select-all-checkbox');
+    if (!selectAll) return;
+    const checkboxes = document.querySelectorAll('#allowances-tbody .row-checkbox');
+    const total = checkboxes.length;
+    const checked = document.querySelectorAll('#allowances-tbody .row-checkbox:checked').length;
+    selectAll.checked = total > 0 && checked === total;
+    selectAll.indeterminate = checked > 0 && checked < total;
+  }
+
+  function updateBulkBar() {
+    const bar = document.getElementById('bulk-bar');
+    const countEl = document.getElementById('bulk-bar-count');
+    if (!bar || !countEl) return;
+    bar.classList.toggle('hidden', selectedIds.size === 0);
+    countEl.textContent = t('common.selected', { count: selectedIds.size });
+  }
+
+  function bulkEditFormHtml() {
+    const engineerOptions = Data.getSettlementEngineers().map((eng) =>
+      `<option value="${escapeHtml(eng)}">${escapeHtml(eng)}</option>`
+    ).join('');
+
+    const departmentOptions = Data.getDepartments().map((dept) =>
+      `<option value="${escapeHtml(dept)}">${escapeHtml(dept)}</option>`
+    ).join('');
+
+    return `
+      <p>${t('common.bulkEditHint')}</p>
+      <div class="form-group">
+        <label>${t('common.field.engineer')}</label>
+        <select id="bulk-engineer">
+          <option value="">${t('common.noChange')}</option>
+          ${engineerOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.receivedDate')}</label>
+        <input type="date" id="bulk-receivedDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.signatureDate')}</label>
+        <input type="date" id="bulk-signatureDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.financeDate')}</label>
+        <input type="date" id="bulk-financeDate">
+      </div>
+      <div class="form-group">
+        <label>${t('common.field.department')}</label>
+        <select id="bulk-department">
+          <option value="">${t('common.noChange')}</option>
+          ${departmentOptions}
+        </select>
+      </div>
+    `;
+  }
+
+  function saveBulkEdit() {
+    const patch = {};
+    const engineer = document.getElementById('bulk-engineer').value;
+    const receivedDate = document.getElementById('bulk-receivedDate').value;
+    const signatureDate = document.getElementById('bulk-signatureDate').value;
+    const financeDate = document.getElementById('bulk-financeDate').value;
+    const department = document.getElementById('bulk-department').value;
+
+    if (engineer) patch.engineer = engineer;
+    if (receivedDate) patch.receivedDate = receivedDate;
+    if (signatureDate) patch.signatureDate = signatureDate;
+    if (financeDate) patch.financeDate = financeDate;
+    if (department) patch.department = department;
+
+    if (Object.keys(patch).length === 0) {
+      showToast(t('common.noFieldsChanged'), 'danger');
+      return;
+    }
+
+    const count = selectedIds.size;
+    selectedIds.forEach((id) => {
+      Data.saveAllowance(Object.assign({ id: id }, patch));
+    });
+    selectedIds.clear();
+    closeModal();
+    renderAllowances();
+    showToast(t('common.bulkUpdated', { count: count }));
+  }
+
+  function openBulkEditModal() {
+    if (selectedIds.size === 0) return;
+    openModal(t('common.bulkEditTitle', { count: selectedIds.size }), bulkEditFormHtml(), [
+      { label: t('common.cancel'), class: 'btn-secondary', onClick: closeModal },
+      { label: t('common.save'), class: 'btn-primary', onClick: saveBulkEdit }
+    ]);
   }
 
   function attachHeaderListeners() {
@@ -120,7 +236,8 @@
 
   function attachRowListeners() {
     document.querySelectorAll('#allowances-tbody tr[data-id]').forEach((tr) => {
-      tr.addEventListener('click', () => {
+      tr.addEventListener('click', (e) => {
+        if (e.target.closest('.td-checkbox')) return;
         const id = tr.dataset.id;
         const record = Data.getAllowances().find((r) => r.id === id);
         if (record) openEditModal(record);
@@ -250,6 +367,21 @@
     document.getElementById('department-filter').addEventListener('change', renderAllowances);
     document.getElementById('engineer-filter').addEventListener('change', renderAllowances);
     document.getElementById('add-allowance-btn').addEventListener('click', openAddModal);
+
+    document.getElementById('select-all-checkbox').addEventListener('change', (e) => {
+      const checked = e.target.checked;
+      document.querySelectorAll('#allowances-tbody .row-checkbox').forEach((cb) => {
+        cb.checked = checked;
+        if (checked) selectedIds.add(cb.dataset.id);
+        else selectedIds.delete(cb.dataset.id);
+      });
+      updateBulkBar();
+    });
+    document.getElementById('bulk-clear-btn').addEventListener('click', () => {
+      selectedIds.clear();
+      renderAllowances();
+    });
+    document.getElementById('bulk-edit-btn').addEventListener('click', openBulkEditModal);
 
     renderAllowances();
   }

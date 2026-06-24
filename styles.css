@@ -619,6 +619,27 @@ tr:hover td { background: #FAFBFC; }
 .td-mono    { font-family: 'IBM Plex Mono', monospace; color: var(--text-muted); }
 .td-value   { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13.5px; white-space: nowrap; }
 
+/* Checkbox column (row selection) */
+th.th-checkbox, td.td-checkbox {
+  width: 40px; padding-inline: 16px; text-align: center; cursor: default;
+}
+.row-checkbox, .select-all-checkbox {
+  width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent);
+}
+
+/* ============================================================
+   BULK ACTION BAR
+   ============================================================ */
+.bulk-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px; padding: 10px 16px;
+  background: var(--accent-soft); border: 1px solid var(--accent);
+  border-radius: var(--radius-btn);
+}
+.bulk-bar.hidden { display: none; }
+.bulk-bar-count { font-size: 13px; font-weight: 600; color: var(--text); }
+.bulk-bar-actions { display: flex; gap: 10px; }
+
 /* Table footer */
 .table-footer {
   display: flex; align-items: center; justify-content: space-between;
